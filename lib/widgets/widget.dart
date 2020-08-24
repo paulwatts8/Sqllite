@@ -62,12 +62,14 @@ class TodoWidget extends StatelessWidget {
                 border: isDone ? null : Border.all(color: Color(0xFF86829D))),
             child: Image(image: AssetImage('assets/images/check_icon.png')),
           ),
-          Text(
-            text ?? 'Input Task',
-            style: TextStyle(
-                color: isDone ? Color(0xFF211551) : Color(0xFF86829D),
-                fontSize: 16.0,
-                fontWeight: isDone ? FontWeight.bold : FontWeight.w500),
+          Flexible(
+            child: Text(
+              text ?? 'Input Task',
+              style: TextStyle(
+                  color: isDone ? Color(0xFF86829D) : Color(0xFF211551),
+                  fontSize: 16.0,
+                  fontWeight: isDone ? FontWeight.w500 : FontWeight.bold),
+            ),
           )
         ],
       ),

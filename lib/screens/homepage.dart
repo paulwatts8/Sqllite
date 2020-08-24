@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqllite/screens/taskpage.dart';
+import 'package:sqllite/utils/db.dart';
 import 'package:sqllite/widgets/widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,6 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DB _db = DB();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,15 +32,34 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Expanded(
-                  child: ScrollConfiguration(
-                    behavior: MyBehavior(),
-                                      child: ListView(children: [
-                      TaskCard(),
-                      TaskCard(),
-                      TaskCard(),
-                      TaskCard(),
-                      TaskCard()
-                    ]),
+                  child: FutureBuilder(
+                    future: _db.getTasks(),
+                    initialData: [],
+                    builder: (context, snapshot) {
+                      return ScrollConfiguration(
+                        behavior: MyBehavior(),
+                        child: ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, i) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => TaskPage(
+                                                  task: snapshot.data[i],
+                                                )))
+                                    .then((value) => setState(() {}));
+                              },
+                              child: TaskCard(
+                                title: snapshot.data[i].title,
+                                desc: snapshot.data[i].description,
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
                 )
               ],
@@ -48,8 +69,12 @@ class _HomePageState extends State<HomePage> {
               right: 0.0,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => TaskPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TaskPage(
+                                task: null,
+                              ))).then((value) => setState(() {}));
                 },
                 child: Container(
                     width: 60.0,
